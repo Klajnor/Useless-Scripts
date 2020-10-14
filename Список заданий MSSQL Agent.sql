@@ -4,6 +4,7 @@ SELECT
   job.name,
   job.enabled,
   job.description,
+  steps.step_id,
   steps.step_name,
   steps.command,
   steps.server,
@@ -12,4 +13,6 @@ FROM
   msdb.dbo.sysjobs job
     INNER JOIN msdb.dbo.sysjobsteps steps ON job.job_id = steps.job_id
 WHERE
-  job.enabled = 1 -- remove this if you wish to return all jobs
+  job.enabled = 0 -- remove this if you wish to return all jobs
+order by 
+  job.name, steps.step_id
