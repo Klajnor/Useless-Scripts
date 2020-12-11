@@ -1,7 +1,8 @@
 select
   *
 from ch.history h
-  cross apply ch.uf_showhistorychanges(h.inc)
+  cross apply ch.uf_showhistorychanges(h.inc) ch
 where
-  h.stable = 'spos' -- record table
-  and h.sinc = 8915 -- record id
+  h.stable = 'partner' -- record table
+  and h.sinc = 262 -- record id
+  --and ch.Field like 'sendmessage%' 
