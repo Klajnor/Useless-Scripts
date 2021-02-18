@@ -7,7 +7,9 @@ declare @res table (
 declare @name nvarchar(max), @error nvarchar(max)
 
 insert into @res (name, src)
-select name, data_source from sys.servers
+select s.name, s.data_source from sys.servers s
+where
+  exists (select 1 from repl_remote rr where ltrim(rtrim(rr.linkserver)) = s.name)
 
 declare cur cursor local static for
 select name from @res
