@@ -2,7 +2,7 @@
   select
     ric.claim,
     min(ric.changetime) min_changetime,
-    case when datediff(d, c.datebeg, convert(date, getdate())) in (0, 1) then 0 else 1 end + case when exists(select 'x' from replsentclaim rs where rs.claim = ric.claim) then 1 else 0 end [priority]
+    case when datediff(d, c.datebeg, convert(date, getdate())) in (0, -1) then 0 else 1 end + case when exists(select 'x' from replsentclaim rs where rs.claim = ric.claim) then 1 else 0 end [priority]
   from REPLINFOCLAIM ric
     left join claim c with (nolock) on c.inc = ric.claim
   group by ric.claim, c.datebeg
