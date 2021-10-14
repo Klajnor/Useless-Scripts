@@ -1,4 +1,4 @@
-declare @remote varchar(3) = 'JOY'
+declare @remote varchar(3) = 'JOY' -- СЮДА ВПИСАТЬ НУЖНЫЙ КОД из repl_remote
 
 update repl_remote set stopsale_forceGlobal = 1 where remote = @remote
 
