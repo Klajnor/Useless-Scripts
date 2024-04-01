@@ -2,7 +2,7 @@
 select * from msdb.dbo.sysjobs where name like '%DEA%'
 */
 
-declare @JobName nvarchar(max) = '%DEA%'
+declare @JobName nvarchar(max) = '%LGO%'
 
 declare @Jobs table (
     name nvarchar(max)
@@ -27,4 +27,4 @@ where 1 = 1
 select * from @Jobs j
 order by j.name
 
---sp_whoisactive 308
+--sp_whoisactive @filter = 340, @get_plans = 1
