@@ -24,7 +24,10 @@ from msdb.dbo.sysjobs j
 where 1 = 1
   and j.name like @JobName
 
-select * from @Jobs j
+select
+    'sp_whoisactive @filter = ' + convert(varchar(16), spid) + ', @get_plans = 1'
+  , *
+from @Jobs j
 order by j.name
 
 --sp_whoisactive @filter = 340, @get_plans = 1
