@@ -3,7 +3,7 @@ select * from msdb.dbo.sysjobs where name like '%DEA%'
 */
 
 declare @JobNameLike nvarchar(max) = '%AL2%'
-declare @JobCommandLike nvarchar(max)-- = '%up_repl_robot_reload_updatedspos%'
+declare @JobCommandLike nvarchar(max) --= '%up_repl_robot_reload_updatedspos%'
 
 if isnull(@JobNameLike, '') = '' set @JobNameLike = null
 if isnull(@JobCommandLike, '') = '' set @JobCommandLike = null
@@ -13,9 +13,9 @@ declare @Jobs table (
   , job_id uniqueidentifier
   , spid int
   , login_time datetime
-  , diff_ms_login_time_to_now int
+  , diff_seconds_login_time_to_now int
   , last_batch datetime
-  , diff_ms_last_batch_to_now int
+  , diff_seconds_last_batch_to_now int
 )
 
 insert into @Jobs (
@@ -23,18 +23,18 @@ insert into @Jobs (
   , job_id
   , spid
   , login_time
-  , diff_ms_login_time_to_now
+  , diff_seconds_login_time_to_now
   , last_batch
-  , diff_ms_last_batch_to_now
+  , diff_seconds_last_batch_to_now
 )
 select
     j.name
   , j.job_id
   , s.spid
   , s.login_time
-  , datediff(second, s.login_time, getdate()) diff_ms_login_time_to_now
+  , datediff(second, s.login_time, getdate()) diff_seconds_login_time_to_now
   , s.last_batch
-  , datediff(second, s.last_batch, getdate()) diff_ms_last_batch_to_now
+  , datediff(second, s.last_batch, getdate()) diff_seconds_last_batch_to_now
 from msdb.dbo.sysjobs j
   outer apply (select top 1 * from sys.sysprocesses where program_name like '%' + master.sys.fn_varbintohexstr(j.job_id) + '%') s
 where 1 = 1
