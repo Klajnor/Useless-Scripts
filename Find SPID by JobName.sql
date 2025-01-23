@@ -2,7 +2,11 @@
 select * from msdb.dbo.sysjobs where name like '%DEA%'
 */
 
-declare @JobName nvarchar(max) = '%AL2%'
+declare @JobNameLike nvarchar(max) = '%AL2%'
+declare @JobCommandLike nvarchar(max)-- = '%up_repl_robot_reload_updatedspos%'
+
+if isnull(@JobNameLike, '') = '' set @JobNameLike = null
+if isnull(@JobCommandLike, '') = '' set @JobCommandLike = null
 
 declare @Jobs table (
     name nvarchar(max)
@@ -34,7 +38,10 @@ select
 from msdb.dbo.sysjobs j
   outer apply (select top 1 * from sys.sysprocesses where program_name like '%' + master.sys.fn_varbintohexstr(j.job_id) + '%') s
 where 1 = 1
-  and j.name like @JobName
+  and (@JobNameLike is null or j.name like @JobNameLike)
+  and (@JobCommandLike is null or exists (select 1 from msdb.dbo.sysjobsteps s where s.job_id = j.job_id and s.command like @JobCommandLike))
+order by
+    j.name
 
 select
     'sp_whoisactive @filter = ' + convert(varchar(16), spid) + ', @get_plans = 1' sp_whoisactive_sql
