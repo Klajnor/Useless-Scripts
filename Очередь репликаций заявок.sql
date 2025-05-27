@@ -10,12 +10,16 @@
 select
   rt.direction, 
   count(*) [count], 
-  sum(case when c.priority = 0 then 1 else 0 end) [0 priority],
-  sum(case when c.priority = 1 then 1 else 0 end) [1 priority],
-  sum(case when c.priority = 2 then 1 else 0 end) [2 priority],
+  sum(case when isnull(cd.privatecomment, '') like '%#ASAP#%' then 1 else 0 end) [ASAP priority], 
+  sum(case when c.priority = 0 then 1 else 0 end) - sum(case when isnull(cd.privatecomment, '') like '%#ASAP#%' then 1 else 0 end) [0 priority],
+  sum(case when c.priority = 1 then 1 else 0 end) - sum(case when isnull(cd.privatecomment, '') like '%#ASAP#%' then 1 else 0 end) [1 priority],
+  sum(case when c.priority = 2 then 1 else 0 end) - sum(case when isnull(cd.privatecomment, '') like '%#ASAP#%' then 1 else 0 end) [2 priority],
   min(c.min_changetime) min_changetime
 from c
   left join claim cc with (nolock) on cc.inc = c.claim
+    left join claim_detail cd with (nolock) on cd.claim = c.claim
   left join REPLTOUR rt with (nolock) on rt.tour = cc.tour
 group by rt.direction
 order by [count] desc
+
+-- ASAP обрабатывается начиная с версии 2024.08
